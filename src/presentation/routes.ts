@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { ProjectsRoutes } from "./projects/routes";
 
 
 
@@ -7,7 +8,7 @@ export class AppRoutes {
     const router = Router();
 
     // Definir rutas
-    // router.use('/api/todos', /*TodoRoutes.routes */ );
+    router.use('/api/projects', ProjectsRoutes.routes);
     
     return router;
   }
