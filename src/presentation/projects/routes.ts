@@ -16,6 +16,12 @@ export class ProjectsRoutes {
       projectController.getAllProjects);
     router.post('/',
       projectController.createProject);
+    router.get('/:id',
+      projectController.findProject);
+    router.put('/:id',
+      projectController.updateProject);
+    router.delete('/:id',
+      projectController.deleteProject);
 
     return router;
   }
