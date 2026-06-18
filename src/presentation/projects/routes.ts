@@ -3,6 +3,9 @@ import { Router } from "express";
 import { ProjectDatasourceImpl } from "../../infraestructure/datasource/project.datasource.impl";
 import { ProjectRepositoryImpl } from "../../infraestructure/repositories/project.repository.impl";
 import { ProjectController } from "./controller";
+import { TaskDatasourceImpl } from "../../infraestructure/datasource/task.datsource.impl";
+import { TaskRepositoryImpl } from "../../infraestructure/repositories/task.repository.impl";
+import { TaskController } from "../tasks/controller";
 
 
 export class ProjectsRoutes {
@@ -22,6 +25,15 @@ export class ProjectsRoutes {
       projectController.updateProject);
     router.delete('/:id',
       projectController.deleteProject);
+
+    // Tasks
+
+    const taskDatasource = new TaskDatasourceImpl();
+    const taskRepository = new TaskRepositoryImpl(taskDatasource)
+    const taskController = new TaskController(taskRepository, projectRepository)
+    router.post('/:projectId/tasks',
+      taskController.createTask
+    )
 
     return router;
   }
