@@ -11,4 +11,14 @@ export class TaskDatasourceImpl implements TaskDatasource {
     return TaskEntity.fromObject(task);
   }
 
+  async getTasksByProjectId(projectId: string): Promise<TaskEntity[]> {
+    const tasks = await prisma.task.findMany({
+      where: {
+        projectId
+      }
+    });
+
+    return tasks.map(task => TaskEntity.fromObject(task));
+  }
+
 }

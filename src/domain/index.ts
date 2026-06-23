@@ -19,3 +19,4 @@ export * from './entities/task.entity'
 export * from './repositories/task.repository'
 
 export * from './use-cases/tasks/create-task';
+export * from './use-cases/tasks/all-tasks';

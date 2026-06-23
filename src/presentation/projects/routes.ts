@@ -6,6 +6,7 @@ import { ProjectController } from "./controller";
 import { TaskDatasourceImpl } from "../../infraestructure/datasource/task.datsource.impl";
 import { TaskRepositoryImpl } from "../../infraestructure/repositories/task.repository.impl";
 import { TaskController } from "../tasks/controller";
+import { ValidateMiddleware } from "../middlewares/project";
 
 
 export class ProjectsRoutes {
@@ -30,9 +31,19 @@ export class ProjectsRoutes {
 
     const taskDatasource = new TaskDatasourceImpl();
     const taskRepository = new TaskRepositoryImpl(taskDatasource)
-    const taskController = new TaskController(taskRepository, projectRepository)
+    const taskController = new TaskController(taskRepository)
+
     router.post('/:projectId/tasks',
+      [
+        ValidateMiddleware.validateProjectExists
+      ],
       taskController.createTask
+    )
+    router.get('/:projectId/tasks',
+      [
+        ValidateMiddleware.validateProjectExists
+      ],
+      taskController.getProjectTasks
     )
 
     return router;

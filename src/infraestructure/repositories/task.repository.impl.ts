@@ -9,4 +9,8 @@ export class TaskRepositoryImpl implements TaskRepository {
     return await this.datsource.create(createTaskDto);
   }
 
+  async getTasksByProjectId(projectId: string): Promise<TaskEntity[]> {
+    return await this.datsource.getTasksByProjectId(projectId);
+  }
+
 }
