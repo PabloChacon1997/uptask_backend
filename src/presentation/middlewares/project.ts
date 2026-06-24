@@ -12,7 +12,7 @@ declare global {
   }
 }
 
-export class ValidateMiddleware {
+export class ValidateProjectMiddleware {
   static async validateProjectExists(req: Request, res: Response, next: NextFunction) {
     const projectId  = req.params.projectId as string;
     try {

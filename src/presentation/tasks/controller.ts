@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import { AllTasks, CreateTask, CreateTaskDto, CustomError, GetTask, TaskRepository, UpdateTask, UpdateTaskDto } from "../../domain";
+import { AllTasks, CreateTask, CreateTaskDto, CustomError, DeleteTask, GetTask, TaskRepository, UpdateStatus, UpdateTask, UpdateTaskDto } from "../../domain";
 
 export class TaskController {
   constructor(
@@ -27,16 +27,6 @@ export class TaskController {
     
   }
 
-  async getTask(id: string) {
-    try {
-      const task = await new GetTask(this.taskRepository)
-        .execute(id as string);
-      return task;
-    } catch (error) {
-      return null;
-    }
-  }
-
   public getProjectTasks = (req: Request, res: Response) => {
     const { id } = req.project;
     new AllTasks(this.taskRepository)
@@ -46,33 +36,36 @@ export class TaskController {
   }
   
   public getTaskById = async (req: Request, res: Response) => {
-    const { taskId } = req.params;
-    const task = await this.getTask(taskId as string);
-    if (!task) {
-      const error =  new Error('Task not found with id: ' + taskId);
-      return res.status(404).json({error: error.message})
-    }
-    if (task.projectId !== req.project.id) {
-      const error = new Error('Not valid action');
-      return res.status(400).json({error: error.message})
-    }
-
+    const { task } = req
     return res.status(200).json(task)
   }
   
   public updateTask = async (req: Request, res: Response) => {
-    const id = req.params.taskId as string
-    const projectId = req.params.projectId as string
-    req.body.projectId = projectId;
-    const [ error, updateTaskDto ] = UpdateTaskDto.create({...req.body, id})
+    const { task, project } = req
+    req.body.projectId = project.id;
+    const [ error, updateTaskDto ] = UpdateTaskDto.create({...req.body, id: task.id})
     if (error) return res.status(400).json({error});
-    if (updateTaskDto!.projectId !== req.project.id) {
-      const error = new Error('Not valid action');
-      return res.status(400).json({error: error.message})
-    }
 
     new UpdateTask(this.taskRepository)
       .execute(updateTaskDto!)
+      .then(task => res.json(task))
+      .catch((err: CustomError) => this.handleError(res, err))
+  }
+
+  public deleteTask = async (req: Request, res: Response) => {
+    const { task } = req
+    new DeleteTask(this.taskRepository)
+      .execute(task.id)
+      .then(task => res.json(task))
+      .catch((err: CustomError) => this.handleError(res, err))
+  }
+
+  public updateStatus = async (req: Request, res: Response) => {
+    const { task } = req
+    const { status } = req.body;
+  
+    new UpdateStatus(this.taskRepository)
+      .execute(task.id, status)
       .then(task => res.json(task))
       .catch((err: CustomError) => this.handleError(res, err))
   }

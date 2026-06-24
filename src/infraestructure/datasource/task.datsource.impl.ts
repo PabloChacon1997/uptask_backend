@@ -1,3 +1,4 @@
+import { TaskStatus } from "../../../generated/prisma";
 import { prisma } from "../../data/postgres";
 import { CreateTaskDto, CustomError, TaskDatasource, TaskEntity, UpdateTaskDto } from "../../domain";
 
@@ -40,6 +41,25 @@ export class TaskDatasourceImpl implements TaskDatasource {
     })
 
     return TaskEntity.fromObject(updateTask);
+  }
+
+  async deleteById(id: string): Promise<TaskEntity> {
+    const deletTask = await prisma.task.delete({ where: { id } })
+    return TaskEntity.fromObject(deletTask);
+  }
+
+  async updateStatus(id: string,status: string): Promise<string> {
+    if (!Object.values(TaskStatus).includes(status as TaskStatus)) throw new CustomError(`Invalid Status`, 400)
+    await prisma.task.update({
+      where: {
+        id
+      },
+      data: {
+        status: status as TaskStatus
+      }
+    })
+
+    return 'Tarea actualizada';
   }
 
 }
