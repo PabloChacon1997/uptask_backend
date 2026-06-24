@@ -20,3 +20,5 @@ export * from './repositories/task.repository'
 
 export * from './use-cases/tasks/create-task';
 export * from './use-cases/tasks/all-tasks';
+export * from './use-cases/tasks/get-task';
+export * from './use-cases/tasks/update-task';

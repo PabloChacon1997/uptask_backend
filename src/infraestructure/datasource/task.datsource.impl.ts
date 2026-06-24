@@ -1,8 +1,9 @@
 import { prisma } from "../../data/postgres";
-import { CreateTaskDto, TaskDatasource, TaskEntity } from "../../domain";
+import { CreateTaskDto, CustomError, TaskDatasource, TaskEntity, UpdateTaskDto } from "../../domain";
 
 
 export class TaskDatasourceImpl implements TaskDatasource {
+
   async create(createTaskDto: CreateTaskDto): Promise<TaskEntity> {
     const task = await prisma.task.create({
       data: createTaskDto
@@ -15,10 +16,30 @@ export class TaskDatasourceImpl implements TaskDatasource {
     const tasks = await prisma.task.findMany({
       where: {
         projectId
+      },
+      include: {
+        project: true,
       }
     });
 
     return tasks.map(task => TaskEntity.fromObject(task));
+    // return tasks;
+  }
+
+  async getTaskById(taskId: string): Promise<TaskEntity> {
+    const task = await prisma.task.findUnique({ where: { id: taskId} });
+    if(!task) throw new CustomError(`Task with id ${taskId} not found`, 404)
+    return TaskEntity.fromObject(task);
+  }
+
+  async update(updateTaskDto: UpdateTaskDto): Promise<TaskEntity> {
+    await this.getTaskById(updateTaskDto.id);
+    const updateTask = await prisma.task.update({
+      where: { id: updateTaskDto.id },
+      data: updateTaskDto.values
+    })
+
+    return TaskEntity.fromObject(updateTask);
   }
 
 }

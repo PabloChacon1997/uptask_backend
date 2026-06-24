@@ -18,9 +18,15 @@ export class ProjectDatasourceImpl implements ProjectDatasource {
   }
 
   async findById(id: string): Promise<ProjectEntity> {
-    const project = await prisma.project.findUnique({ where: { id } })
+    const project = await prisma.project.findUnique({ 
+      where: { id },
+      include: {
+        tasks: true
+      }
+    })
     if(!project) throw new CustomError(`Project with id ${id} not found`, 404)
-    return ProjectEntity.fromObject(project);
+    // return ProjectEntity.fromObject(project);
+    return project;
   }
 
   async updateById(updateProjectDto: UpdateProjectDto): Promise<ProjectEntity> {

@@ -1,6 +1,5 @@
 import { CreateTaskDto } from "../../dtos";
 import { TaskEntity } from "../../entities/task.entity";
-import { ProjectRepository } from "../../repositories/project.repository";
 import { TaskRepository } from "../../repositories/task.repository";
 
 

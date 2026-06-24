@@ -33,18 +33,17 @@ export class ProjectsRoutes {
     const taskRepository = new TaskRepositoryImpl(taskDatasource)
     const taskController = new TaskController(taskRepository)
 
+    router.param('projectId', ValidateMiddleware.validateProjectExists)
     router.post('/:projectId/tasks',
-      [
-        ValidateMiddleware.validateProjectExists
-      ],
-      taskController.createTask
-    )
+      taskController.createTask)
+
     router.get('/:projectId/tasks',
-      [
-        ValidateMiddleware.validateProjectExists
-      ],
-      taskController.getProjectTasks
-    )
+      taskController.getProjectTasks)
+
+    router.get('/:projectId/tasks/:taskId',
+      taskController.getTaskById)
+    router.put('/:projectId/tasks/:taskId',
+      taskController.updateTask)
 
     return router;
   }
