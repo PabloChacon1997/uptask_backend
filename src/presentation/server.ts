@@ -1,5 +1,7 @@
 import express ,{ Router, Express } from "express";
+import cors from 'cors'
 import path from "path";
+import { corsConfig } from "../config/cors";
 
 
 interface Options {
@@ -24,6 +26,7 @@ export class Server {
   }
 
   async start() {
+    this.app.use(cors(corsConfig))
     // Middlewares
     this.app.use(express.json())
 

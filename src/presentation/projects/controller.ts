@@ -28,7 +28,7 @@ export class ProjectController {
     if (error) return res.status(400).json({error});
     new CreateProject(this.projectRepository)
       .execute(createProjectDto!)
-      .then(project => res.status(201).json(project))
+      .then(project => res.status(201).json('Proyecto creado correctamente'))
       .catch((err: CustomError) => this.handleError(res, err))
   }
 
