@@ -1,6 +1,8 @@
 import express ,{ Router, Express } from "express";
 import cors from 'cors'
 import path from "path";
+import morgan from "morgan";
+
 import { corsConfig } from "../config/cors";
 
 
@@ -28,6 +30,7 @@ export class Server {
   async start() {
     this.app.use(cors(corsConfig))
     // Middlewares
+    this.app.use(morgan('dev'))
     this.app.use(express.json())
 
     // Public folder
