@@ -1,6 +1,12 @@
 export * from './errors/custom.error'
 export * from './dtos'
 
+
+// Auth
+export * from './datasources/auth.datasource'
+export * from './entities/user.entity'
+export * from './repositories/auth.repository'
+
 // Projects
 export * from './datasources/project.datasource'
 export * from './entities/project.entity'
@@ -13,7 +19,6 @@ export * from './use-cases/project/update-project';
 export * from './use-cases/project/delete-project';
 
 // Tasks
-
 export * from './datasources/task.datasource'
 export * from './entities/task.entity'
 export * from './repositories/task.repository'
