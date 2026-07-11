@@ -7,6 +7,8 @@ export * from './datasources/auth.datasource'
 export * from './entities/user.entity'
 export * from './repositories/auth.repository'
 
+export * from './use-cases/users/create-user';
+
 // Projects
 export * from './datasources/project.datasource'
 export * from './entities/project.entity'

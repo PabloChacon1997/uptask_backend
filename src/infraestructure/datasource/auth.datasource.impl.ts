@@ -1,4 +1,16 @@
-import { AuthDatasource } from "../../domain";
+import { prisma } from "../../data/postgres";
+import { AuthDatasource, CreateUserDto, CustomError, UserEntity } from "../../domain";
 
 
-export class AuthDatsourceImpl implements AuthDatasource {}
+export class AuthDatsourceImpl implements AuthDatasource {
+  async create(createUserDto: CreateUserDto): Promise<UserEntity> {
+    const userExists = await prisma.user.findUnique({ where: { email: createUserDto.email } })
+    if(userExists) throw new CustomError(`Already exists a user with email: ${userExists.email}`, 409)
+    const user = await prisma.user.create({
+      data: createUserDto
+    })
+
+    return user;
+  }
+
+}

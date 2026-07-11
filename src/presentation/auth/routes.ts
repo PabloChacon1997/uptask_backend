@@ -10,9 +10,8 @@ export class AuthRoutes {
     const repository = new AuthRepositoryImpl(datasource);
     const authController = new AuthController(repository);
 
-    router.get('/', (req, res) => {
-      res.send('desde /api/auth');
-    })
+    router.post('/create-account',
+      authController.createAccount)
 
     return router;
   }
