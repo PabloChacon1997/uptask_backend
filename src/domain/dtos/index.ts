@@ -1,5 +1,6 @@
 // Users
 export * from './users/create-user.dto';
+export * from './users/validate-login.dto';
 
 // Projects
 export * from './projects/create-project.dto';

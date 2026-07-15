@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 
-import { AuthRepository, CreateUser, CreateUserDto, CustomError } from "../../domain";
-import { hashPassword } from "../../utils/auth";
+import { AuthRepository, ConfirmAccount, CreateUser, CreateUserDto, CustomError, LoginUser, ValidateLoginDto } from "../../domain";
 
 export class AuthController {
   constructor(
@@ -19,12 +18,27 @@ export class AuthController {
   public createAccount = async (req: Request, res: Response) => {
     const [error, createUserDto] = CreateUserDto.create(req.body || {} )
     if (error) return res.status(400).json({error});
-    if (createUserDto) {
-      createUserDto.password = await hashPassword(req.body.password);
-    }
     new CreateUser(this.authRepository)
       .execute(createUserDto!)
       .then(user => res.status(201).json(user))
+      .catch((err: CustomError) => this.handleError(res, err))
+  }
+
+  public confirmAccount = async (req: Request, res: Response) => {
+    const { token } = req.body;
+    if (!token || token.lenght === 0) return res.status(400).json({error: 'No existe un token'});
+    new ConfirmAccount(this.authRepository)
+      .execute(token)
+      .then(user => res.status(200).json('Cuenta confirmada correctamente'))
+      .catch((err: CustomError) => this.handleError(res, err))
+  }
+
+  public login = async (req: Request, res: Response) => {
+    const [error, validateLoginDto] = ValidateLoginDto.create(req.body || {} )
+    if (error) return res.status(400).json({error});
+    new LoginUser(this.authRepository)
+      .execute(validateLoginDto!)
+      .then(user => res.status(200).json('Autenticado...'))
       .catch((err: CustomError) => this.handleError(res, err))
   }
 }

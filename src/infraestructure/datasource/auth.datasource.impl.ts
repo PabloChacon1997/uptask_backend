@@ -1,33 +1,86 @@
-import { transporter } from "../../config/nodemailer";
 import { prisma } from "../../data/postgres";
-import { AuthDatasource, CreateUserDto, CustomError, UserEntity } from "../../domain";
+import { AuthDatasource, CreateUserDto, CustomError, UserEntity, ValidateLoginDto } from "../../domain";
+import { checkPassword, hashPassword } from "../../utils/auth";
 import { generateToken } from "../../utils/token";
+import { AuthEmail } from "../emails/AuthEmail";
 
 
 export class AuthDatsourceImpl implements AuthDatasource {
+
+  async findUserByEmail(email: string) {
+    return await prisma.user.findUnique({ where: { email } })
+  }
+
+  async createToken(userId: string) {
+    return await prisma.token.create({
+      data: {
+        token: generateToken(),
+        userId
+      }
+    });
+  }
   async create(createUserDto: CreateUserDto): Promise<UserEntity> {
-    const userExists = await prisma.user.findUnique({ where: { email: createUserDto.email } })
+    const userExists = await this.findUserByEmail(createUserDto.email);
     if(userExists) throw new CustomError(`Already exists a user with email: ${userExists.email}`, 409)
+    createUserDto.password = await hashPassword(createUserDto.password);
     const user = await prisma.user.create({
       data: createUserDto
     })
 
-    await prisma.token.create({
-      data: {
-        token: generateToken(),
-        userId: user.id
-      }
-    });
+    const token = await this.createToken(user.id)
 
-    await transporter.sendMail({
-      from: 'UpTask <admin@uptask.com>',
-      to: user.email,
-      subject: 'UpTask - Confirma tu cuenta',
-      text: 'UpTask - Confirma tu cuenta',
-      html: `<p></p>`
+    AuthEmail.sendConfirmationEmail({
+      email: user.email,
+      name: user.name,
+      token: token.token
     })
 
     return user;
+  }
+
+  async deleteToken(tokenId: string) {
+    await prisma.token.delete({ where: { id: tokenId } })
+  }
+
+  async confirm(token: string): Promise<UserEntity> {
+    const tokenExists = await prisma.token.findFirst({
+      where: { token }
+    })
+
+    if (!tokenExists) throw new CustomError(`Token not found`, 404)
+    if (tokenExists.expires_at < new Date()) {
+      this.deleteToken(tokenExists.id);
+      throw new CustomError(`Token not found`, 404)
+    }
+
+    const user = await prisma.user.update({
+      where: { id: tokenExists.userId },
+      data: {
+        confirmed: true,
+      }
+    })
+
+    this.deleteToken(tokenExists.id);
+    return user;
+  }
+
+  async login(user: ValidateLoginDto): Promise<UserEntity> {
+    const userExists = await this.findUserByEmail(user.email);
+    if(!userExists) throw new CustomError(`Email or Password incorrect`, 404)
+    if(!userExists.confirmed) {
+      const token = await this.createToken(userExists.id);
+      AuthEmail.sendConfirmationEmail({
+        email: userExists.email,
+        name: userExists.name,
+        token: token.token
+      })
+      throw new CustomError(`Account not confirmed yet`, 401)
+    }
+
+    const isPasswordCorrect = await checkPassword(user.password, userExists.password);
+    if(!isPasswordCorrect) throw new CustomError(`Email or Password incorrect`, 404)
+    
+    return userExists;
   }
 
 }

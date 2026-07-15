@@ -13,6 +13,12 @@ export class AuthRoutes {
     router.post('/create-account',
       authController.createAccount)
 
+    router.post('/confirm-account',
+      authController.confirmAccount)
+
+    router.post('/login',
+      authController.login)
+
     return router;
   }
 }
