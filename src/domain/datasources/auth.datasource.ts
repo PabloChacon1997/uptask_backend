@@ -7,4 +7,5 @@ export abstract class AuthDatasource {
   abstract create(createUserDto: CreateUserDto): Promise<UserEntity>;
   abstract confirm(token: string): Promise<UserEntity>;
   abstract login(user: ValidateLoginDto): Promise<UserEntity>;
+  abstract confirmationCode(email: string): Promise<string>;
 }

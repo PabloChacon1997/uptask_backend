@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import { AuthRepository, ConfirmAccount, CreateUser, CreateUserDto, CustomError, LoginUser, ValidateLoginDto } from "../../domain";
+import { AuthRepository, ConfirmAccount, ConfirmToken, CreateUser, CreateUserDto, CustomError, LoginUser, ValidateLoginDto } from "../../domain";
 
 export class AuthController {
   constructor(
@@ -39,6 +39,16 @@ export class AuthController {
     new LoginUser(this.authRepository)
       .execute(validateLoginDto!)
       .then(user => res.status(200).json('Autenticado...'))
+      .catch((err: CustomError) => this.handleError(res, err))
+  }
+
+  public confirmationCode = async (req: Request, res: Response) => {
+    const { email } = req.body;
+    if (!email || email.lenght === 0) return res.status(400).json({error: 'No existe un email'});
+    if (!email.includes('@')) return res.status(400).json({error: 'Email no válido'});
+    new ConfirmToken(this.authRepository)
+      .execute(email)
+      .then(user => res.status(200).json(user))
       .catch((err: CustomError) => this.handleError(res, err))
   }
 }

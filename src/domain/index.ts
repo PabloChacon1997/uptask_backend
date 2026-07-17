@@ -10,6 +10,7 @@ export * from './repositories/auth.repository'
 export * from './use-cases/users/create-user';
 export * from './use-cases/users/confirm-account';
 export * from './use-cases/users/login-user';
+export * from './use-cases/users/confirm-token';
 
 // Projects
 export * from './datasources/project.datasource'

@@ -1,3 +1,4 @@
+import { envs } from "../../config/envs";
 import { transporter } from "../../config/nodemailer"
 
 interface IEmail {
@@ -16,7 +17,7 @@ export class AuthEmail {
       html: `
         <p>Hola: ${user.name}, has creado tu cuenta en UpTask, ya casi esta todo listo solo debes confirmar tu cuenta.</p>
         <p>Visita el siguiente enlace</p>
-        <a href="">Confirmar cuenta</a>
+        <a href="${envs.FRONTEND_URL}/auth/confirm-account">Confirmar cuenta</a>
         <p>E ingresa el codigo: <b>${user.token}</b></p>
         <p>Este token expira en 1 día</p>
       `

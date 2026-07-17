@@ -17,4 +17,8 @@ export class AuthRepositoryImpl implements AuthRepository {
   login(user: ValidateLoginDto): Promise<UserEntity> {
     return this.datsource.login(user);
   }
+
+  confirmationCode(email: string): Promise<string> {
+    return this.datsource.confirmationCode(email);
+  }
 }

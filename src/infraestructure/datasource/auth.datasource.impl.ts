@@ -83,4 +83,19 @@ export class AuthDatsourceImpl implements AuthDatasource {
     return userExists;
   }
 
+  async confirmationCode(email: string): Promise<string> {
+    const user = await this.findUserByEmail(email);
+    if(!user) throw new CustomError(`Not exists a user with email: ${email}`, 404)
+    if(user.confirmed) throw new CustomError(`User with email: ${user.email} is confirmed, you can login`, 409)
+    const token = await this.createToken(user.id)
+
+    AuthEmail.sendConfirmationEmail({
+      email: user.email,
+      name: user.name,
+      token: token.token
+    })
+
+    return "Se envio un nuevo token a tu email"
+  }
+
 }
