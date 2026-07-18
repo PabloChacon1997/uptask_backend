@@ -94,8 +94,21 @@ export class AuthDatsourceImpl implements AuthDatasource {
       name: user.name,
       token: token.token
     })
-
+    
     return "Se envio un nuevo token a tu email"
+  }
+  
+  async resetPassword(email: string): Promise<string> {
+    const user = await this.findUserByEmail(email);
+    if(!user) throw new CustomError(`Not exists a user with email: ${email}`, 404)
+    const token = await this.createToken(user.id)
+    AuthEmail.sendPasswordResetToken({
+      email: user.email,
+      name: user.name,
+      token: token.token
+    })
+
+    return "Revisa tu e-mail para instrucciones";
   }
 
 }

@@ -21,4 +21,8 @@ export class AuthRepositoryImpl implements AuthRepository {
   confirmationCode(email: string): Promise<string> {
     return this.datsource.confirmationCode(email);
   }
+
+  resetPassword(email: string): Promise<string> {
+    return this.datsource.resetPassword(email);
+  }
 }

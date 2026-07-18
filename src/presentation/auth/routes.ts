@@ -22,6 +22,9 @@ export class AuthRoutes {
     router.post('/request-code',
       authController.confirmationCode)
 
+    router.post('/forgot-password',
+      authController.forgotPassword)
+
     return router;
   }
 }

@@ -11,6 +11,7 @@ export * from './use-cases/users/create-user';
 export * from './use-cases/users/confirm-account';
 export * from './use-cases/users/login-user';
 export * from './use-cases/users/confirm-token';
+export * from './use-cases/users/reset-password';
 
 // Projects
 export * from './datasources/project.datasource'
