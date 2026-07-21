@@ -6,7 +6,9 @@ import { UserEntity } from "../entities/user.entity";
 export abstract class AuthDatasource {
   abstract create(createUserDto: CreateUserDto): Promise<UserEntity>;
   abstract confirm(token: string): Promise<UserEntity>;
-  abstract login(user: ValidateLoginDto): Promise<UserEntity>;
+  abstract login(user: ValidateLoginDto): Promise<string>;
   abstract confirmationCode(email: string): Promise<string>;
   abstract resetPassword(email: string): Promise<string>;
+  abstract validateToken(token: string): Promise<string>;
+  abstract updatePassword(token: string, password: string): Promise<string>;
 }

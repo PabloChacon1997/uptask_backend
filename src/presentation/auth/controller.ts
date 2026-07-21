@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import { AuthRepository, ConfirmAccount, ConfirmToken, CreateUser, CreateUserDto, CustomError, LoginUser, ResetPassword, ValidateLoginDto } from "../../domain";
+import { AuthRepository, ConfirmAccount, ConfirmToken, CreateUser, CreateUserDto, CustomError, LoginUser, ResetPassword, UpdatePassword, ValidateLoginDto } from "../../domain";
 
 export class AuthController {
   constructor(
@@ -26,7 +26,7 @@ export class AuthController {
 
   public confirmAccount = async (req: Request, res: Response) => {
     const { token } = req.body;
-    if (!token || token.lenght === 0) return res.status(400).json({error: 'No existe un token'});
+    if (!token || token.length === 0) return res.status(400).json({error: 'No existe un token'});
     new ConfirmAccount(this.authRepository)
       .execute(token)
       .then(user => res.status(200).json('Cuenta confirmada correctamente'))
@@ -38,7 +38,7 @@ export class AuthController {
     if (error) return res.status(400).json({error});
     new LoginUser(this.authRepository)
       .execute(validateLoginDto!)
-      .then(user => res.status(200).json('Autenticado...'))
+      .then(user => res.status(200).json(user))
       .catch((err: CustomError) => this.handleError(res, err))
   }
 
@@ -58,6 +58,26 @@ export class AuthController {
     if (!email.includes('@')) return res.status(400).json({error: 'Email no válido'});
     new ResetPassword(this.authRepository)
       .execute(email)
+      .then(user => res.status(200).json(user))
+      .catch((err: CustomError) => this.handleError(res, err))
+  }
+
+  public validateToken = async (req: Request, res: Response) => {
+    const { token } = req.body;
+    if (!token || token.length === 0) return res.status(400).json({error: 'No existe un token'});
+    new ConfirmToken(this.authRepository)
+      .vaidate(token)
+      .then(user => res.status(200).json(user))
+      .catch((err: CustomError) => this.handleError(res, err))
+  }
+
+  public updatePasswordWithToken = async (req: Request, res: Response) => {
+    const { token } = req.params;
+    if (!token || token.length === 0) return res.status(400).json({error: 'No existe un token'});
+    const [error, password] = ValidateLoginDto.validatePassword(req.body || {} )
+    if (error) return res.status(400).json({error});
+    new UpdatePassword(this.authRepository)
+      .execute(token as string, password!)
       .then(user => res.status(200).json(user))
       .catch((err: CustomError) => this.handleError(res, err))
   }

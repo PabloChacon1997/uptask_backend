@@ -1,6 +1,7 @@
 import { prisma } from "../../data/postgres";
 import { AuthDatasource, CreateUserDto, CustomError, UserEntity, ValidateLoginDto } from "../../domain";
 import { checkPassword, hashPassword } from "../../utils/auth";
+import { generateJWT } from "../../utils/jwt";
 import { generateToken } from "../../utils/token";
 import { AuthEmail } from "../emails/AuthEmail";
 
@@ -64,7 +65,7 @@ export class AuthDatsourceImpl implements AuthDatasource {
     return user;
   }
 
-  async login(user: ValidateLoginDto): Promise<UserEntity> {
+  async login(user: ValidateLoginDto): Promise<string> {
     const userExists = await this.findUserByEmail(user.email);
     if(!userExists) throw new CustomError(`Email or Password incorrect`, 404)
     if(!userExists.confirmed) {
@@ -79,8 +80,10 @@ export class AuthDatsourceImpl implements AuthDatasource {
 
     const isPasswordCorrect = await checkPassword(user.password, userExists.password);
     if(!isPasswordCorrect) throw new CustomError(`Email or Password incorrect`, 404)
+
+    const token = generateJWT({id: userExists.id});
     
-    return userExists;
+    return token;
   }
 
   async confirmationCode(email: string): Promise<string> {
@@ -109,6 +112,42 @@ export class AuthDatsourceImpl implements AuthDatasource {
     })
 
     return "Revisa tu e-mail para instrucciones";
+  }
+
+  async validateToken(token: string): Promise<string> {
+    const tokenExists = await prisma.token.findFirst({
+      where: { token }
+    })
+
+    if (!tokenExists) throw new CustomError(`Token not found`, 404)
+    if (tokenExists.expires_at < new Date()) {
+      await this.deleteToken(tokenExists.id);
+      throw new CustomError(`Token not found`, 404)
+    }
+
+    return 'Token válido, define tu nuevo password';
+  }
+
+  async updatePassword(token: string, password: string): Promise<string> {
+    const tokenExists = await prisma.token.findFirst({
+      where: { token }
+    })
+
+    if (!tokenExists) throw new CustomError(`Token not found`, 404)
+    if (tokenExists.expires_at < new Date()) {
+      await this.deleteToken(tokenExists.id);
+      throw new CustomError(`Token not found`, 404)
+    }
+
+    await prisma.user.update({
+      where: { id: tokenExists.userId },
+      data: {
+        password: await hashPassword(password)
+      }
+    })
+    await this.deleteToken(tokenExists.id);
+
+    return 'El password se modifico correctamente';
   }
 
 }

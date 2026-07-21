@@ -34,7 +34,7 @@ export class AuthEmail {
       html: `
         <p>Hola: ${user.name}, has solicitado reestablecer tu password.</p>
         <p>Visita el siguiente enlace</p>
-        <a href="${envs.FRONTEND_URL}/auth/confirm-account">Reestablecer password</a>
+        <a href="${envs.FRONTEND_URL}/auth/new-password">Reestablecer password</a>
         <p>E ingresa el codigo: <b>${user.token}</b></p>
         <p>Este token expira en 1 día</p>
       `

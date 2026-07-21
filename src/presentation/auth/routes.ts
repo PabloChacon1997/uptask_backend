@@ -25,6 +25,12 @@ export class AuthRoutes {
     router.post('/forgot-password',
       authController.forgotPassword)
 
+    router.post('/validate-token',
+      authController.validateToken)
+
+    router.post('/update-password/:token',
+      authController.updatePasswordWithToken)
+
     return router;
   }
 }

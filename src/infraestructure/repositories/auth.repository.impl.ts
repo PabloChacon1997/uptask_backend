@@ -14,7 +14,7 @@ export class AuthRepositoryImpl implements AuthRepository {
     return this.datsource.confirm(token);
   }
 
-  login(user: ValidateLoginDto): Promise<UserEntity> {
+  login(user: ValidateLoginDto): Promise<string> {
     return this.datsource.login(user);
   }
 
@@ -24,5 +24,13 @@ export class AuthRepositoryImpl implements AuthRepository {
 
   resetPassword(email: string): Promise<string> {
     return this.datsource.resetPassword(email);
+  }
+
+  validateToken(token: string): Promise<string> {
+    return this.datsource.validateToken(token);
+  }
+
+  updatePassword(token: string, password: string): Promise<string> {
+    return this.datsource.updatePassword(token, password);
   }
 }
