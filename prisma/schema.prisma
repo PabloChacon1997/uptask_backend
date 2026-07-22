@@ -38,6 +38,8 @@ model Project {
   description           String                          @db.Text
   created_at            DateTime                        @default(now())
   updated_at            DateTime                        @updatedAt
+  managerId             String                          @db.Uuid // Siempre añadir UUID
+  manager               User                            @relation(fields: [managerId], references: [id])
 
   tasks                 Task[]
 }
@@ -63,4 +65,5 @@ model User {
   updated_at            DateTime                        @updatedAt
 
   tokens                Token[]
+  projects              Project[]
 }

@@ -8,6 +8,7 @@ import { TaskRepositoryImpl } from "../../infraestructure/repositories/task.repo
 import { TaskController } from "../tasks/controller";
 import { ValidateProjectMiddleware } from "../middlewares/project";
 import { ValidateTasktMiddleware } from "../middlewares/task";
+import { Auth } from "../middlewares/auth";
 
 
 export class ProjectsRoutes {
@@ -20,6 +21,7 @@ export class ProjectsRoutes {
     router.get('/',
       projectController.getAllProjects);
     router.post('/',
+      Auth.authenticate,
       projectController.createProject);
     router.get('/:id',
       projectController.findProject);
