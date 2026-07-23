@@ -7,7 +7,7 @@ import { prisma } from '../../data/postgres';
 declare global {
   namespace Express {
     interface Request {
-      user?: { id: string }
+      user?: { id: string, email: string, name: string }
     }
   }
 }
@@ -29,7 +29,7 @@ export class Auth {
       if (typeof decoded === 'object' && decoded.id) {
         const user = await prisma.user.findUnique({ 
           where: { id: decoded.id },
-          select: { id: true }
+          select: { id: true, email: true, name: true }
         });
         if (!user) {
           return res.status(500).json({error: 'Token no válido'});

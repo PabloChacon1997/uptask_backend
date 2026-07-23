@@ -17,8 +17,9 @@ export class ProjectController {
   }
 
   public getAllProjects = async (req: Request, res: Response) => {
+    const id = req.user?.id
     new GetProjects(this.projectRepository)
-      .execute()
+      .execute(id!)
       .then(project => res.json(project))
       .catch((err: CustomError) => this.handleError(res, err))
   }
@@ -35,27 +36,30 @@ export class ProjectController {
 
   public findProject = (req: Request, res: Response) => {
     const id = req.params.id as string
+    const managerId = req.user?.id
     new GetProject(this.projectRepository)
-      .execute(id)
+      .execute(id, managerId!)
       .then(project => res.json(project))
       .catch((err: CustomError) => this.handleError(res, err))
   }
 
   public updateProject = (req: Request, res: Response) => {
     const id = req.params.id as string
+    const managerId = req.user?.id
     const [ error, updateProjectDto ] = UpdateProjectDto.create({...req.body, id})
     if (error) return res.status(400).json({error});
 
     new UpdateProject(this.projectRepository)
-      .execute(updateProjectDto!)
+      .execute(updateProjectDto!, managerId!)
       .then(project => res.json(project))
       .catch((err: CustomError) => this.handleError(res, err))
   }
 
   public deleteProject = (req: Request, res: Response) => {
     const id = req.params.id as string
+    const managerId = req.user?.id
     new DeleteProject(this.projectRepository)
-      .execute(id)
+      .execute(id, managerId!)
       .then(project => res.json(project))
       .catch((err: CustomError) => this.handleError(res, err))
   }

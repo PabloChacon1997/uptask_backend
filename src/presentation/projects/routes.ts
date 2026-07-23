@@ -18,10 +18,11 @@ export class ProjectsRoutes {
     const projectRepository = new ProjectRepositoryImpl(datasource);
     const projectController = new ProjectController(projectRepository);
 
+    router.use(Auth.authenticate)
+
     router.get('/',
       projectController.getAllProjects);
     router.post('/',
-      Auth.authenticate,
       projectController.createProject);
     router.get('/:id',
       projectController.findProject);

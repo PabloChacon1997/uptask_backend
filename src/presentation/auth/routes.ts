@@ -2,6 +2,7 @@ import { Router } from "express";
 import { AuthDatsourceImpl } from "../../infraestructure/datasource/auth.datasource.impl";
 import { AuthRepositoryImpl } from "../../infraestructure/repositories/auth.repository.impl";
 import { AuthController } from "./controller";
+import { Auth } from "../middlewares/auth";
 
 export class AuthRoutes {
   static get routes(): Router {
@@ -30,6 +31,10 @@ export class AuthRoutes {
 
     router.post('/update-password/:token',
       authController.updatePasswordWithToken)
+
+    router.get('/user',
+      Auth.authenticate,
+      authController.user)
 
     return router;
   }

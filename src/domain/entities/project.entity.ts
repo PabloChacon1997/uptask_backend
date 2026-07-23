@@ -6,15 +6,17 @@ export class ProjectEntity {
     public projectName: string,
     public clientName: string,
     public description: string,
+    public managerId: string,
   ) {}
 
   public static fromObject(object: {[key: string]: any}): ProjectEntity {
-    const { id, projectName, clientName, description } = object
+    const { id, projectName, clientName, description, managerId } = object
     if(!id) throw 'Id is required';
     if(!projectName) throw 'ProjectName is required';
     if(!clientName) throw 'ClientName is required';
     if(!description) throw 'Description is required';
+    if(!managerId) throw 'Manager is required';
 
-    return new ProjectEntity(id, projectName, clientName, description);
+    return new ProjectEntity(id, projectName, clientName, description, managerId);
   }
 }

@@ -81,4 +81,7 @@ export class AuthController {
       .then(user => res.status(200).json(user))
       .catch((err: CustomError) => this.handleError(res, err))
   }
+  public user = async (req: Request, res: Response) => {
+    return res.json(req.user)
+  }
 }

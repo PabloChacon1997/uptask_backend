@@ -4,15 +4,15 @@ import { ProjectRepository } from "../../repositories/project.repository";
 
 
 export interface UpdateProjectUsecase {
-  execute(dto: UpdateProjectDto): Promise<ProjectEntity>
+  execute(dto: UpdateProjectDto, managerId: string): Promise<ProjectEntity>
 }
 
 export class UpdateProject implements UpdateProjectUsecase {
   constructor(
     private readonly repository: ProjectRepository
   ) {}
-  execute(dto: UpdateProjectDto): Promise<ProjectEntity> {
-    return this.repository.updateById(dto)
+  execute(dto: UpdateProjectDto, managerId: string): Promise<ProjectEntity> {
+    return this.repository.updateById(dto, managerId)
   }
 
 }
