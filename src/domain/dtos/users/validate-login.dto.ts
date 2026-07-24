@@ -19,4 +19,11 @@ export class ValidateLoginDto {
     if (password !== password_confirmation) return ['Passwords not equal', undefined];
     return [undefined, password]
   }
+  
+  static validateEmail(props: {[key: string]: any}): [string, undefined] | [undefined, string] {
+    const { email } = props;
+    if (!email || email.length === 0) return ['Email property is required', undefined];
+    if (!email.includes('@')) return ['Email not valid', undefined];
+    return [undefined, email]
+  }
 }

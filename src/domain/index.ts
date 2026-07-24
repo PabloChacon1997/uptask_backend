@@ -36,3 +36,9 @@ export * from './use-cases/tasks/get-task';
 export * from './use-cases/tasks/update-task';
 export * from './use-cases/tasks/delete-task';
 export * from './use-cases/tasks/update-status';
+
+// Teams
+export * from './datasources/team.datasource';
+export * from './repositories/team.repository';
+
+export * from './use-cases/teams/find-user-by-email';

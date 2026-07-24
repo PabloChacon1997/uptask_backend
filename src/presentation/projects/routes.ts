@@ -9,6 +9,9 @@ import { TaskController } from "../tasks/controller";
 import { ValidateProjectMiddleware } from "../middlewares/project";
 import { ValidateTasktMiddleware } from "../middlewares/task";
 import { Auth } from "../middlewares/auth";
+import { TeamMemberController } from "../team/controller";
+import { TeamDatasourceImpl } from "../../infraestructure/datasource/team.datasource.impl";
+import { TeamRepositoryImpl } from "../../infraestructure/repositories/team.repository.impl";
 
 
 export class ProjectsRoutes {
@@ -56,6 +59,13 @@ export class ProjectsRoutes {
       taskController.deleteTask)
     router.post('/:projectId/tasks/:taskId/status',
       taskController.updateStatus)
+    
+    // Teams
+    const teamDatasource = new TeamDatasourceImpl()
+    const teamRepository = new TeamRepositoryImpl(teamDatasource)
+    const teamController = new TeamMemberController(teamRepository)
+    router.post('/:projectId/team/find',
+      teamController.findMemberByEmail)
 
     return router;
   }
