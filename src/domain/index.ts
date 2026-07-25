@@ -42,3 +42,6 @@ export * from './datasources/team.datasource';
 export * from './repositories/team.repository';
 
 export * from './use-cases/teams/find-user-by-email';
+export * from './use-cases/teams/add-member-by-id';
+export * from './use-cases/teams/delete-member-by-id';
+export * from './use-cases/teams/get-project-team';

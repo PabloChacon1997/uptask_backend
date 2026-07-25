@@ -64,8 +64,18 @@ export class ProjectsRoutes {
     const teamDatasource = new TeamDatasourceImpl()
     const teamRepository = new TeamRepositoryImpl(teamDatasource)
     const teamController = new TeamMemberController(teamRepository)
+
     router.post('/:projectId/team/find',
       teamController.findMemberByEmail)
+
+    router.get('/:projectId/team',
+      teamController.getProjectTeam)
+
+    router.post('/:projectId/team',
+      teamController.addMemberById)
+
+    router.delete('/:projectId/team',
+      teamController.deleteMemberById)
 
     return router;
   }
