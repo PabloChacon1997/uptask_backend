@@ -19,7 +19,7 @@ export class ProjectController {
   public getAllProjects = async (req: Request, res: Response) => {
     const id = req.user?.id
     new GetProjects(this.projectRepository)
-      .execute(id!)
+      .execute(id!, id!)
       .then(project => res.json(project))
       .catch((err: CustomError) => this.handleError(res, err))
   }

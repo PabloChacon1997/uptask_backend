@@ -5,8 +5,8 @@ export class ProjectRepositoryImpl implements ProjectRepository {
   constructor(
     private readonly datsource: ProjectDatasource,
   ) {}  
-  async getAll(managerId: string): Promise<ProjectEntity[]> {
-    return this.datsource.getAll(managerId);
+  async getAll(managerId: string, userId: string): Promise<ProjectEntity[]> {
+    return this.datsource.getAll(managerId, userId);
   }
   async create(createProjectDto: CreateProjectDto): Promise<ProjectEntity> {
     return this.datsource.create(createProjectDto);

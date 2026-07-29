@@ -5,9 +5,20 @@ import { CreateProjectDto, CustomError, ProjectDatasource, ProjectEntity, Update
 
 export class ProjectDatasourceImpl implements ProjectDatasource {
 
-  async getAll(managerId: string): Promise<ProjectEntity[]> {
+  async getAll(managerId: string, userId: string): Promise<ProjectEntity[]> {
     const projects = await prisma.project.findMany({
-      where: { managerId }
+      where: { 
+        OR: [
+          { managerId },
+          {
+            team: {
+              some: {
+                userId
+              }
+            }
+          }
+        ]
+      }
     })
     return projects.map(project => ProjectEntity.fromObject(project));
   }
@@ -23,11 +34,18 @@ export class ProjectDatasourceImpl implements ProjectDatasource {
     const project = await prisma.project.findUnique({ 
       where: { id },
       include: {
-        tasks: true
+        tasks: true,
+        team: true,
       }
     })
-    if(!project) throw new CustomError(`Project with id ${id} not found`, 404)
-    if(project.managerId !== managerId ) throw new CustomError(`Invalid action`, 401)
+    if(!project) throw new CustomError(`Project with id ${id} not found`, 404);
+    const isMember = await prisma.projectMember.findFirst({
+      where: {
+        projectId: project.id,
+        userId: managerId
+      }
+    });
+    if(project.managerId !== managerId &&  !isMember) throw new CustomError(`Invalid action`, 401)
     // return ProjectEntity.fromObject(project);
     return project;
   }

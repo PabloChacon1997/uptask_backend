@@ -39,4 +39,15 @@ export class ValidateTasktMiddleware {
       return res.status(500).json({ error: 'Hubo un error'})
     }
   }
+  static async hasAuthorization(req: Request, res: Response, next: NextFunction) {
+    try {
+      if (req.user?.id !== req.project.managerId) {
+        const error = new Error('Not valid action');
+        return res.status(400).json({error: error.message})
+      }
+      return next();
+    } catch (error) {
+      return res.status(500).json({ error: 'Hubo un error'})
+    }
+  }
 }

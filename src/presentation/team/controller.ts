@@ -44,12 +44,12 @@ export class TeamMemberController {
   }
 
   public deleteMemberById = async (req: Request, res: Response) => {
-    const { id } = req.body
+    const userId = req.params.userId as string
     const projectId = req.project.id
-    if (!id || id.length === 0) return res.status(400).json({error: 'Id property user is required'});
-    if (req.project.managerId === id) return res.status(409).json({error: 'Manager cant be a remove'});
+    if (!userId || userId.length === 0) return res.status(400).json({error: 'Id property user is required'});
+    if (req.project.managerId === userId) return res.status(409).json({error: 'Manager cant be a remove'});
     new DeleteMemberById(this.teamRepository)
-      .execute(id, projectId)
+      .execute(userId, projectId)
       .then(member => res.json(member))
       .catch((err: CustomError) => this.handleError(res, err))
   }

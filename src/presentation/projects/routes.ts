@@ -43,6 +43,7 @@ export class ProjectsRoutes {
     router.param('projectId', ValidateProjectMiddleware.validateProjectExists)
     
     router.post('/:projectId/tasks',
+      ValidateTasktMiddleware.hasAuthorization,
       taskController.createTask)
 
     router.get('/:projectId/tasks',
@@ -54,8 +55,10 @@ export class ProjectsRoutes {
     router.get('/:projectId/tasks/:taskId',
       taskController.getTaskById)
     router.put('/:projectId/tasks/:taskId',
+      ValidateTasktMiddleware.hasAuthorization,
       taskController.updateTask)
     router.delete('/:projectId/tasks/:taskId',
+      ValidateTasktMiddleware.hasAuthorization,
       taskController.deleteTask)
     router.post('/:projectId/tasks/:taskId/status',
       taskController.updateStatus)
@@ -74,7 +77,7 @@ export class ProjectsRoutes {
     router.post('/:projectId/team',
       teamController.addMemberById)
 
-    router.delete('/:projectId/team',
+    router.delete('/:projectId/team/:userId',
       teamController.deleteMemberById)
 
     return router;
