@@ -52,6 +52,8 @@ model Task {
   project               Project                         @relation(fields: [projectId], references: [id])
   projectId             String                          @db.Uuid // Siempre añadir UUID
   status                TaskStatus                      @default(PENDING)
+  updated_by            String?                         @db.Uuid // Siempre añadir UUID
+  user                  User?                           @relation(fields: [updated_by], references: [id])
   created_at            DateTime                        @default(now())
   updated_at            DateTime                        @updatedAt
 }
@@ -68,6 +70,7 @@ model User {
   tokens                Token[]
   projects              Project[]
   collaborations        ProjectMember[]
+  tasks                 Task[]
 }
 
 model ProjectMember {

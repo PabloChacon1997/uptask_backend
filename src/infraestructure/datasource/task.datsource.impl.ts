@@ -33,6 +33,18 @@ export class TaskDatasourceImpl implements TaskDatasource {
     return TaskEntity.fromObject(task);
   }
 
+  async getTaskByIdAndUser(taskId: string): Promise<TaskEntity> {
+    const task = await prisma.task.findUnique({ 
+      where: { id: taskId},
+      include: {
+        user: { select: { id: true, name: true, email: true } }
+      }
+    });
+    if(!task) throw new CustomError(`Task with id ${taskId} not found`, 404)
+    return task;
+  }
+
+
   async update(updateTaskDto: UpdateTaskDto): Promise<TaskEntity> {
     await this.getTaskById(updateTaskDto.id);
     const updateTask = await prisma.task.update({
@@ -48,14 +60,15 @@ export class TaskDatasourceImpl implements TaskDatasource {
     return TaskEntity.fromObject(deletTask);
   }
 
-  async updateStatus(id: string,status: string): Promise<string> {
+  async updateStatus(id: string,status: string, userId: string): Promise<string> {
     if (!Object.values(TaskStatus).includes(status as TaskStatus)) throw new CustomError(`Invalid Status`, 400)
     await prisma.task.update({
       where: {
         id
       },
       data: {
-        status: status as TaskStatus
+        status: status as TaskStatus,
+        updated_by: userId,
       }
     })
 

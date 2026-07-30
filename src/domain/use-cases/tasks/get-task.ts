@@ -3,6 +3,7 @@ import { TaskRepository } from "../../repositories/task.repository"
 
 export interface GetTaskUsecase {
   execute(id: string): Promise<TaskEntity>
+  getTaskAndUser(id: string): Promise<TaskEntity>
 }
 
 export class GetTask implements GetTaskUsecase {
@@ -12,5 +13,9 @@ export class GetTask implements GetTaskUsecase {
   
   async execute( id: string): Promise<TaskEntity> {
     return await this.repository.getTaskById(id);
+  }
+
+  async getTaskAndUser(id: string): Promise<TaskEntity> {
+    return await this.repository.getTaskByIdAndUser(id);
   }
 }

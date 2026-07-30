@@ -37,7 +37,10 @@ export class TaskController {
   
   public getTaskById = async (req: Request, res: Response) => {
     const { task } = req
-    return res.status(200).json(task)
+    new GetTask(this.taskRepository)
+      .getTaskAndUser(task.id)
+      .then(task => res.status(200).json(task))
+      .catch((err: CustomError) => this.handleError(res, err))
   }
   
   public updateTask = async (req: Request, res: Response) => {
@@ -63,9 +66,10 @@ export class TaskController {
   public updateStatus = async (req: Request, res: Response) => {
     const { task } = req
     const { status } = req.body;
+    const userId = req.user?.id
   
     new UpdateStatus(this.taskRepository)
-      .execute(task.id, status)
+      .execute(task.id, status, userId!)
       .then(task => res.json(task))
       .catch((err: CustomError) => this.handleError(res, err))
   }

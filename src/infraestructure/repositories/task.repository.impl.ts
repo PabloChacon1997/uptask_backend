@@ -17,6 +17,10 @@ export class TaskRepositoryImpl implements TaskRepository {
     return await this.datsource.getTaskById(taskId);
   }
 
+  async getTaskByIdAndUser(taskId: string): Promise<TaskEntity> {
+    return await this.datsource.getTaskByIdAndUser(taskId);
+  }
+
   async update(updateTaskDto: UpdateTaskDto): Promise<TaskEntity> {
     return await this.datsource.update(updateTaskDto);
   }
@@ -25,8 +29,8 @@ export class TaskRepositoryImpl implements TaskRepository {
     return await this.datsource.deleteById(id);
   }
 
-  async updateStatus(id: string, status: string): Promise<string> {
-    return await this.datsource.updateStatus(id, status)
+  async updateStatus(id: string, status: string, userId: string): Promise<string> {
+    return await this.datsource.updateStatus(id, status, userId)
   }
 
 }
