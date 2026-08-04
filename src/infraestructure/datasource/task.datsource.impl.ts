@@ -60,16 +60,26 @@ export class TaskDatasourceImpl implements TaskDatasource {
     return TaskEntity.fromObject(deletTask);
   }
 
-  async updateStatus(id: string,status: string, userId: string): Promise<string> {
-    if (!Object.values(TaskStatus).includes(status as TaskStatus)) throw new CustomError(`Invalid Status`, 400)
-    await prisma.task.update({
-      where: {
-        id
-      },
-      data: {
-        status: status as TaskStatus,
-        updated_by: userId,
-      }
+  async updateStatus(id: string,prevStatus: string,status: string, userId: string): Promise<string> {
+    if (!Object.values(TaskStatus).includes(status as TaskStatus)) throw new CustomError(`Invalid Status`, 400);
+    await prisma.$transaction(async (tx) => {
+      await tx.taskHistory.create({
+        data: {
+          taskId: id,
+          userId,
+          prevStatus: prevStatus as TaskStatus,
+          newStatus: status as TaskStatus,
+        }
+      })
+      await tx.task.update({
+        where: {
+          id
+        },
+        data: {
+          status: status as TaskStatus,
+          updated_by: userId,
+        }
+      })
     })
 
     return 'Tarea actualizada';

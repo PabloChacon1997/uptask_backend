@@ -12,6 +12,9 @@ import { Auth } from "../middlewares/auth";
 import { TeamMemberController } from "../team/controller";
 import { TeamDatasourceImpl } from "../../infraestructure/datasource/team.datasource.impl";
 import { TeamRepositoryImpl } from "../../infraestructure/repositories/team.repository.impl";
+import { NoteController } from '../notes/controller';
+import { NoteDatasourceImpl } from '../../infraestructure/datasource/note.datasource.impl';
+import { NoteRepositoryImpl } from '../../infraestructure/repositories/note.repository.impl';
 
 
 export class ProjectsRoutes {
@@ -79,6 +82,15 @@ export class ProjectsRoutes {
 
     router.delete('/:projectId/team/:userId',
       teamController.deleteMemberById)
+
+    // Routes for Notes
+    const noteDatasource = new NoteDatasourceImpl()
+    const noteRepository = new NoteRepositoryImpl(noteDatasource)
+    const noteController = new NoteController(noteRepository);
+    router.post('/:projectId/tasks/:taskId/notes',
+      noteController.createNote
+    )
+
 
     return router;
   }

@@ -69,7 +69,7 @@ export class TaskController {
     const userId = req.user?.id
   
     new UpdateStatus(this.taskRepository)
-      .execute(task.id, status, userId!)
+      .execute(task.id, task.status,status, userId!)
       .then(task => res.json(task))
       .catch((err: CustomError) => this.handleError(res, err))
   }

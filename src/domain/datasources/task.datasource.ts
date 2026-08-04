@@ -9,5 +9,5 @@ export abstract class TaskDatasource {
   abstract getTaskByIdAndUser(taskId: string): Promise<TaskEntity>;
   abstract update(updateTaskDto: UpdateTaskDto): Promise<TaskEntity>;
   abstract deleteById(id: string): Promise<TaskEntity>;
-  abstract updateStatus(id: string, status: string, userId: string): Promise<string>;
+  abstract updateStatus(id: string, prevStatus: string,status: string, userId: string): Promise<string>;
 }

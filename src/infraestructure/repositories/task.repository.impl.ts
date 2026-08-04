@@ -29,8 +29,8 @@ export class TaskRepositoryImpl implements TaskRepository {
     return await this.datsource.deleteById(id);
   }
 
-  async updateStatus(id: string, status: string, userId: string): Promise<string> {
-    return await this.datsource.updateStatus(id, status, userId)
+  async updateStatus(id: string, prevStatus: string,status: string, userId: string): Promise<string> {
+    return await this.datsource.updateStatus(id, prevStatus,status, userId)
   }
 
 }

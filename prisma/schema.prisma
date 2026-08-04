@@ -56,6 +56,8 @@ model Task {
   user                  User?                           @relation(fields: [updated_by], references: [id])
   created_at            DateTime                        @default(now())
   updated_at            DateTime                        @updatedAt
+  history               TaskHistory[]
+  notes                 Note[]
 }
 
 model User {
@@ -71,6 +73,19 @@ model User {
   projects              Project[]
   collaborations        ProjectMember[]
   tasks                 Task[]
+  taskHistory           TaskHistory[]
+  notes                 Note[]
+}
+
+model TaskHistory {
+  id                    String                          @id   @default(uuid()) @db.Uuid
+  taskId                String                          @db.Uuid
+  task                  Task                            @relation(fields: [taskId], references: [id])
+  userId                String                          @db.Uuid
+  user                  User                            @relation(fields: [userId], references: [id])
+  prevStatus            TaskStatus
+  newStatus             TaskStatus
+  changed_at            DateTime                        @default(now())
 }
 
 model ProjectMember {
@@ -83,4 +98,15 @@ model ProjectMember {
   user                  User                            @relation(fields: [userId], references: [id])
 
   @@unique([projectId, userId])
+}
+
+model Note {
+  id                    String                          @id   @default(uuid()) @db.Uuid
+  content               String                          @db.Text
+  taskId                String                          @db.Uuid
+  task                  Task                            @relation(fields: [taskId], references: [id])
+  created_by            String                          @db.Uuid
+  creator               User                            @relation(fields: [created_by], references: [id])
+  created_at            DateTime                        @default(now())
+  updated_at            DateTime                        @updatedAt
 }
