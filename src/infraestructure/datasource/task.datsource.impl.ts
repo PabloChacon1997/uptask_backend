@@ -37,7 +37,12 @@ export class TaskDatasourceImpl implements TaskDatasource {
     const task = await prisma.task.findUnique({ 
       where: { id: taskId},
       include: {
-        user: { select: { id: true, name: true, email: true } }
+        user: { select: { id: true, name: true, email: true } },
+        notes: {
+          include: {
+            creator: { select: { id: true, name: true, email: true }  }
+          }
+        }
       }
     });
     if(!task) throw new CustomError(`Task with id ${taskId} not found`, 404)

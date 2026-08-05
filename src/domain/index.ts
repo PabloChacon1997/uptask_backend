@@ -48,6 +48,9 @@ export * from './use-cases/teams/get-project-team';
 
 // Notes
 export * from './datasources/note.datasource';
+export * from './entities/note.entity';
 export * from './repositories/note.repository';
 
 export * from './use-cases/notes/create-note';
+export * from './use-cases/notes/all-notes';
+export * from './use-cases/notes/delete-note';

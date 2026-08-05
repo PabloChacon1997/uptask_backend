@@ -89,6 +89,14 @@ export class ProjectsRoutes {
     const noteController = new NoteController(noteRepository);
     router.post('/:projectId/tasks/:taskId/notes',
       noteController.createNote
+    );
+
+    router.get('/:projectId/tasks/:taskId/notes',
+      noteController.getTaskNotes
+    );
+
+    router.delete('/:projectId/tasks/:taskId/notes/:noteId',
+      noteController.deleteNote
     )
 
 
