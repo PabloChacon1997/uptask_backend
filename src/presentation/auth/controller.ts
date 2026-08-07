@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import { AuthRepository, ConfirmAccount, ConfirmToken, CreateUser, CreateUserDto, CustomError, LoginUser, ResetPassword, UpdatePassword, ValidateLoginDto } from "../../domain";
+import { AuthRepository, ChangePassword, ConfirmAccount, ConfirmToken, CreateUser, CreateUserDto, CustomError, LoginUser, ResetPassword, UpdatePassword, UpdateProfile, ValidateLoginDto } from "../../domain";
 
 export class AuthController {
   constructor(
@@ -83,5 +83,27 @@ export class AuthController {
   }
   public user = async (req: Request, res: Response) => {
     return res.json(req.user)
+  }
+
+  public updateProfile = async (req: Request, res: Response) => {
+    const userId = req.user?.id
+    const [error, profile] = ValidateLoginDto.validateProfile(req.body || {} )
+    const { name, email } = profile!
+    if (error) return res.status(400).json({error});
+    new UpdateProfile(this.authRepository)
+      .execute(userId!,name, email)
+      .then(user => res.status(200).json(user))
+      .catch((err: CustomError) => this.handleError(res, err))
+  }
+
+  public updateCurrentUserPasswod = async (req: Request, res: Response) => {
+    const userId = req.user?.id!
+    const [error, update] = ValidateLoginDto.validateNewPassword(req.body || {} )
+    if (error) return res.status(400).json({error});
+    const { current_password, password } = update!
+    new ChangePassword(this.authRepository)
+      .execute(userId, current_password, password)
+      .then(user => res.status(200).json(user))
+      .catch((err: CustomError) => this.handleError(res, err))
   }
 }

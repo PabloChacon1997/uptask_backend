@@ -150,4 +150,44 @@ export class AuthDatsourceImpl implements AuthDatasource {
     return 'El password se modifico correctamente';
   }
 
+  async updateProfile(id: string,name: string, email: string): Promise<string> {
+    const user = await prisma.user.findUnique({
+      where: { email }
+    })
+    if (user && user.id !== id) {
+      throw new CustomError(`Este email ya esta registrado`, 409);
+    }
+    await prisma.user.update({
+      where: {
+        id
+      },
+      data: {
+        name,
+        email
+      }
+    });
+
+    return "Perfil actualizado correctamente"
+  }
+
+  async changePassword(id: string, current_password: string, password: string): Promise<string> {
+    const user = await prisma.user.findUnique({
+      where: { id }
+    })
+
+    const isPasswordCorrect = await checkPassword(current_password, user!.password)
+    if (!isPasswordCorrect) {
+      throw new CustomError(`El password actual es incorrecto`, 401);
+    }
+
+    await prisma.user.update({
+      where: { id: user!.id },
+      data: {
+        password: await hashPassword(password)
+      }
+    })
+
+    return "El password se modifico correctamente";
+  }
+
 }

@@ -11,4 +11,6 @@ export abstract class AuthDatasource {
   abstract resetPassword(email: string): Promise<string>;
   abstract validateToken(token: string): Promise<string>;
   abstract updatePassword(token: string, password: string): Promise<string>;
+  abstract updateProfile(id: string, name: string, email: string ): Promise<string>;
+  abstract changePassword(id: string, current_password: string, password: string ): Promise<string>;
 }

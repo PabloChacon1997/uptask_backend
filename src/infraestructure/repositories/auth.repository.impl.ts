@@ -33,4 +33,12 @@ export class AuthRepositoryImpl implements AuthRepository {
   updatePassword(token: string, password: string): Promise<string> {
     return this.datsource.updatePassword(token, password);
   }
+
+  updateProfile(id: string, name: string, email: string): Promise<string> {
+    return this.datsource.updateProfile(id, name, email);
+  }
+
+  changePassword(id: string, current_password: string, password: string): Promise<string> {
+    return this.datsource.changePassword(id, current_password, password);
+  }
 }

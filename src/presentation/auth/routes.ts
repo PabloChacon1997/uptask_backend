@@ -34,7 +34,18 @@ export class AuthRoutes {
 
     router.get('/user',
       Auth.authenticate,
-      authController.user)
+      authController.user);
+    
+    // Profile
+    router.put('/profile',
+      Auth.authenticate,
+      authController.updateProfile,
+    )
+
+    router.post('/change-password',
+      Auth.authenticate,
+      authController.updateCurrentUserPasswod,
+    )
 
     return router;
   }
