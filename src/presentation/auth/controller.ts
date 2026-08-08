@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import { AuthRepository, ChangePassword, ConfirmAccount, ConfirmToken, CreateUser, CreateUserDto, CustomError, LoginUser, ResetPassword, UpdatePassword, UpdateProfile, ValidateLoginDto } from "../../domain";
+import { AuthRepository, ChangePassword, CheckPassword, ConfirmAccount, ConfirmToken, CreateUser, CreateUserDto, CustomError, LoginUser, ResetPassword, UpdatePassword, UpdateProfile, ValidateLoginDto } from "../../domain";
 
 export class AuthController {
   constructor(
@@ -103,6 +103,16 @@ export class AuthController {
     const { current_password, password } = update!
     new ChangePassword(this.authRepository)
       .execute(userId, current_password, password)
+      .then(user => res.status(200).json(user))
+      .catch((err: CustomError) => this.handleError(res, err))
+  }
+
+  public checkPassword = async (req: Request, res: Response) => {
+    const { password } = req.body
+    const userId = req.user?.id!;
+    if (!password || password.length === 0) return res.status(400).json({error: 'El password es requerido'});
+    new CheckPassword(this.authRepository)
+      .execute(userId, password)
       .then(user => res.status(200).json(user))
       .catch((err: CustomError) => this.handleError(res, err))
   }

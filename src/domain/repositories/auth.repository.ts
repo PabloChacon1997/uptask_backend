@@ -12,4 +12,5 @@ export abstract class AuthRepository {
   abstract updatePassword(token: string, password: string): Promise<string>;
   abstract updateProfile(id: string, name: string, email: string ): Promise<string>;
   abstract changePassword(id: string, current_password: string, password: string ): Promise<string>;
+  abstract checkPassword(userId: string, password: string ): Promise<string>;
 }

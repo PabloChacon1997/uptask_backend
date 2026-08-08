@@ -190,4 +190,16 @@ export class AuthDatsourceImpl implements AuthDatasource {
     return "El password se modifico correctamente";
   }
 
+  async checkPassword(userId: string, password: string): Promise<string> {
+    const user = await prisma.user.findUnique({
+      where: { id: userId }
+    })
+    const isPasswordCorrect = await checkPassword(password, user!.password)
+    if (!isPasswordCorrect) {
+      throw new CustomError(`El password es incorrecto`, 401);
+    }
+
+    return "Password correcto";
+  }
+
 }

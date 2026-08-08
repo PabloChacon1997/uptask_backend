@@ -15,6 +15,7 @@ export * from './use-cases/users/reset-password';
 export * from './use-cases/users/update-password';
 export * from './use-cases/users/update-profile';
 export * from './use-cases/users/change-password';
+export * from './use-cases/users/check-password';
 
 // Projects
 export * from './datasources/project.datasource'

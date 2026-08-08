@@ -47,6 +47,11 @@ export class AuthRoutes {
       authController.updateCurrentUserPasswod,
     )
 
+    router.post('/check-password',
+      Auth.authenticate,
+      authController.checkPassword
+    )
+
     return router;
   }
 }
