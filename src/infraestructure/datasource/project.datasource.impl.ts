@@ -51,7 +51,6 @@ export class ProjectDatasourceImpl implements ProjectDatasource {
   }
 
   async updateById(updateProjectDto: UpdateProjectDto, managerId: string): Promise<ProjectEntity> {
-    await this.findById(updateProjectDto.id, managerId);
     const updateProject = await prisma.project.update({
       where: { id: updateProjectDto.id },
       data: updateProjectDto.values
@@ -61,8 +60,17 @@ export class ProjectDatasourceImpl implements ProjectDatasource {
   }
 
   async deleteById(id: string, managerId: string): Promise<ProjectEntity> {
-    await this.findById(id, managerId);
-    const deleted = await prisma.project.delete({ where: { id } })
+    const deleted = await prisma.$transaction(async (tx) => {
+      const tasks = await tx.task.findMany({
+        where: { projectId: id }
+      })
+      const tasksIds = tasks.map(task => task.id)
+      await tx.note.deleteMany({where: { taskId: { in: tasksIds } }});
+      await tx.taskHistory.deleteMany({ where: { taskId: { in: tasksIds } } })
+      await tx.task.deleteMany({ where: { id: { in: tasksIds } } })
+      await tx.projectMember.deleteMany({ where: { projectId: id } })
+      return await tx.project.delete({ where: { id } })
+    })
     return ProjectEntity.fromObject(deleted);
   }
 

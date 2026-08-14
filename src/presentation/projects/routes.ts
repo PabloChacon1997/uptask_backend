@@ -32,9 +32,12 @@ export class ProjectsRoutes {
       projectController.createProject);
     router.get('/:id',
       projectController.findProject);
-    router.put('/:id',
+    router.param('projectId', ValidateProjectMiddleware.validateProjectExists)
+    router.put('/:projectId',
+      ValidateTasktMiddleware.hasAuthorization,
       projectController.updateProject);
-    router.delete('/:id',
+    router.delete('/:projectId',
+      ValidateTasktMiddleware.hasAuthorization,
       projectController.deleteProject);
 
     // Tasks
@@ -43,7 +46,7 @@ export class ProjectsRoutes {
     const taskRepository = new TaskRepositoryImpl(taskDatasource)
     const taskController = new TaskController(taskRepository)
 
-    router.param('projectId', ValidateProjectMiddleware.validateProjectExists)
+    
     
     router.post('/:projectId/tasks',
       ValidateTasktMiddleware.hasAuthorization,

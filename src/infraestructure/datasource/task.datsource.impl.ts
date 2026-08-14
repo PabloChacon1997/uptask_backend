@@ -61,7 +61,11 @@ export class TaskDatasourceImpl implements TaskDatasource {
   }
 
   async deleteById(id: string): Promise<TaskEntity> {
-    const deletTask = await prisma.task.delete({ where: { id } })
+    const deletTask = await prisma.$transaction(async  tx => {
+      await tx.note.deleteMany({ where: { taskId: id } });
+      await tx.taskHistory.deleteMany({ where: { taskId: id } });
+      return await tx.task.delete({ where: { id } })
+    })
     return TaskEntity.fromObject(deletTask);
   }
 

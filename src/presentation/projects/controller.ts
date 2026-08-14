@@ -13,6 +13,7 @@ export class ProjectController {
       res.status(error.statusCode).json({error: error.message})
       return;
     }
+    console.log(error);
     res.status(500).json({error: 'Internal Server Error'})
   }
 
@@ -44,7 +45,7 @@ export class ProjectController {
   }
 
   public updateProject = (req: Request, res: Response) => {
-    const id = req.params.id as string
+    const id = req.project.id
     const managerId = req.user?.id
     const [ error, updateProjectDto ] = UpdateProjectDto.create({...req.body, id})
     if (error) return res.status(400).json({error});
@@ -56,7 +57,7 @@ export class ProjectController {
   }
 
   public deleteProject = (req: Request, res: Response) => {
-    const id = req.params.id as string
+    const id = req.project.id
     const managerId = req.user?.id
     new DeleteProject(this.projectRepository)
       .execute(id, managerId!)
