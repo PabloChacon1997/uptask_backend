@@ -3,7 +3,7 @@
   "include": ["src", "generated"],
   "compilerOptions": {
     "rootDir": ".",
-    "outDir": "dist/"
+    "outDir": "dist/",
 	"baseUrl": ".",
     "paths": {
       "@prisma/client": ["./generated/prisma"]
