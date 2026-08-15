@@ -4,7 +4,6 @@
   "compilerOptions": {
     "rootDir": ".",
     "outDir": "dist/",
-	"baseUrl": ".",
     "paths": {
       "@prisma/client": ["./generated/prisma"]
     },
