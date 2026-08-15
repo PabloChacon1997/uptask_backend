@@ -1,9 +1,13 @@
 {
   "exclude": ["node_modules", "dist", "src/**/*.test.ts"],
-  "include": ["src"],
+  "include": ["src", "generated"],
   "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "dist/",
+    "rootDir": ".",
+    "outDir": "dist/"
+	"baseUrl": ".",
+    "paths": {
+      "@prisma/client": ["./generated/prisma"]
+    },
     "module": "Commonjs",
     "target": "ES2023",
     "esModuleInterop": true,
