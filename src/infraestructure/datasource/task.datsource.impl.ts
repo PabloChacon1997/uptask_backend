@@ -1,4 +1,4 @@
-import { TaskStatus } from "../../../generated/prisma";
+import { TaskStatus } from "@prisma/client";
 import { prisma } from "../../data/postgres";
 import { CreateTaskDto, CustomError, TaskDatasource, TaskEntity, UpdateTaskDto } from "../../domain";
 
