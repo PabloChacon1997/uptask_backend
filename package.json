@@ -6,9 +6,8 @@
   "scripts": {
     "dev": "tsnd --respawn src/index.ts",
     "dev:api": "tsnd --respawn src/index.ts --api",
-    "start": "npm run build && node dist/index.js",
-	"build": "tsc",
-	"start": "node dist/index.js"
+    "build": "prisma generate && tsc",
+    "start": "node dist/index.js"
   },
   "keywords": [],
   "author": "",
